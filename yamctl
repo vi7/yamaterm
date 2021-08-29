@@ -103,7 +103,7 @@ rstop() {
 }
 
 rpause() {
-  echo "[MAIN][INFO] Toggle Play"
+  echo "[MAIN][INFO] Playback PAUSE"
   send_req "netusb/setPlayback?playback=pause"
 }
 
