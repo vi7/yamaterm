@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+
+NR_ADDR="192.168.1.182"
+API_VER="v1"
+BASE_URL="http://$NR_ADDR/YamahaExtendedControl/$API_VER"
+
+ZONE="main"
+MAX_VOL=60
+
+help() {
+  declare -F | cut -d' ' -f3 | grep -vw main
+}
+
+####################
+# HELPER FUNCTIONS #
+####################
+send_req() {
+  echo "[SEND_REQ][DEBUG] Calling \"$BASE_URL/$1\""
+  curl -s "$BASE_URL/$1" | jq
+}
+
+custom() {
+  send_req "$1"
+}
+
+#########################
+# INFORMATION FUNCTIONS #
+#########################
+idev() {
+  echo "[MAIN][INFO] Device information:"
+  send_req "system/getDeviceInfo"
+}
+
+###################
+# POWER FUNCTIONS #
+###################
+on() {
+  echo "[MAIN][INFO] Power ON"
+  send_req "$ZONE/setPower?power=on"
+}
+
+
+off() {
+  echo "[MAIN][INFO] Power ON"
+  send_req "$ZONE/setPower?power=standby"
+}
+
+tgl() {
+  echo "[MAIN][INFO] Power ON"
+  send_req "$ZONE/setPower?power=toggle"
+}
+
+####################
+# VOLUME FUNCTIONS #
+####################
+vup() {
+  echo "[MAIN][INFO] Volume UP"
+  send_req "$ZONE/setVolume?volume=up&step=2"
+}
+
+vdown() {
+  echo "[MAIN][INFO] Volume DOWN"
+  send_req "$ZONE/setVolume?volume=down&step=2"
+}
+
+vval() {
+  if [ $1 -le $MAX_VOL ]
+  then
+    echo "[MAIN][INFO] Set volume to $1"
+    send_req "$ZONE/setVolume?volume=$1"
+  else
+    echo "[MAIN][ERROR] Specified volume level $1 is too high!"
+    exit 255
+  fi
+}
+
+###########################
+# Network Radio FUNCTIONS #
+###########################
+rpresets() {
+  echo "[MAIN][INFO] Radio presets:"
+  send_req "netusb/getPresetInfo"
+}
+
+rset() {
+  echo "[MAIN][INFO] Set Radio preset to $1"
+  send_req "netusb/recallPreset?zone=main&num=$1"
+}
+
+rinfo() {
+  echo "[MAIN][INFO] Radio playback info:"
+  send_req "netusb/getPlayInfo"
+}
+
+rplay() {
+  echo "[MAIN][INFO] Playback PLAY"
+  send_req "netusb/setPlayback?playback=play"
+}
+
+rstop() {
+  echo "[MAIN][INFO] Playback STOP"
+  send_req "netusb/setPlayback?playback=stop"
+}
+
+rpause() {
+  echo "[MAIN][INFO] Toggle Play"
+  send_req "netusb/setPlayback?playback=pause"
+}
+
+
+#############
+#    MAIN   #
+#############
+main() {
+  $1 $2
+}
+
+
+main "$@"
+
