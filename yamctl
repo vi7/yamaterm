@@ -46,12 +46,12 @@ on() {
 
 
 off() {
-  echo "[MAIN][INFO] Power ON"
+  echo "[MAIN][INFO] Power OFF"
   send_req "$ZONE/setPower?power=standby"
 }
 
 tgl() {
-  echo "[MAIN][INFO] Power ON"
+  echo "[MAIN][INFO] Power TOGGLE"
   send_req "$ZONE/setPower?power=toggle"
 }
 
