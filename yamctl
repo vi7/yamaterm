@@ -6,7 +6,7 @@
 
 
 NR_ADDR="192.168.1.21"
-API_VER="v1"
+API_VER="v2"
 BASE_URL="http://$NR_ADDR/YamahaExtendedControl/$API_VER"
 
 ZONE="main"
