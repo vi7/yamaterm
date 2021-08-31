@@ -5,7 +5,7 @@
 # Suitable for the Yamaha eXtended Control API
 
 
-NR_ADDR="192.168.1.182"
+NR_ADDR="192.168.1.21"
 API_VER="v1"
 BASE_URL="http://$NR_ADDR/YamahaExtendedControl/$API_VER"
 
