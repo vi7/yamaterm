@@ -24,6 +24,10 @@ send_req() {
   curl -s "$BASE_URL/$1" | jq
 }
 
+send_req_raw() {
+  curl -s "$BASE_URL/$1"
+}
+
 custom() {
   send_req "$1"
 }
@@ -77,6 +81,49 @@ vval() {
     echo "[MAIN][ERROR] Specified volume level $1 is too high!"
     exit 255
   fi
+}
+
+##################
+# Tone Functions #
+##################
+
+_getb() {
+  send_req_raw "$ZONE/getStatus" | jq ".tone_control.bass"
+}
+
+_gett() {
+  send_req_raw "$ZONE/getStatus" | jq ".tone_control.treble"
+}
+
+tbup() {
+  curr_val=_getb
+  echo "[MAIN][INFO] Bass UP"
+  send_req "$ZONE/setToneControl?mode=manual&bass=$((curr_val + 2))"
+}
+
+tbdown() {
+  curr_val=_getb
+  echo "[MAIN][INFO] Bass DOWN"
+  send_req "$ZONE/setToneControl?mode=manual&bass=$((curr_val - 2))"
+}
+
+ttup() {
+  curr_val=_gett
+  echo "[MAIN][INFO] Treble UP"
+  send_req "$ZONE/setToneControl?mode=manual&treble=$((curr_val + 2))"
+}
+
+ttdown() {
+  curr_val=_gett
+  echo "[MAIN][INFO] Treble DOWN"
+  send_req "$ZONE/setToneControl?mode=manual&treble=$((curr_val - 2))"
+}
+
+tinfo() {
+  echo "[MAIN][INFO] Current Tone Control values:
+  Bass: $(_getb)
+  Treble: $(_gett)
+  "
 }
 
 ###########################
