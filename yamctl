@@ -86,43 +86,48 @@ vval() {
 ##################
 # Tone Functions #
 ##################
+_tb_curr_val=0
+_tt_curr_val=0
 
 _getb() {
-  send_req_raw "$ZONE/getStatus" | jq ".tone_control.bass"
+  _tb_curr_val=$(send_req_raw "$ZONE/getStatus" | jq ".tone_control.bass")
 }
 
 _gett() {
-  send_req_raw "$ZONE/getStatus" | jq ".tone_control.treble"
+  _tt_curr_val=$(send_req_raw "$ZONE/getStatus" | jq ".tone_control.treble")
 }
 
 tbup() {
-  curr_val=_getb
+  _getb
   echo "[MAIN][INFO] Bass UP"
-  send_req "$ZONE/setToneControl?mode=manual&bass=$((curr_val + 2))"
+  send_req "$ZONE/setToneControl?mode=manual&bass=$(($_tb_curr_val + 1))"
 }
 
 tbdown() {
-  curr_val=_getb
+  _getb
   echo "[MAIN][INFO] Bass DOWN"
-  send_req "$ZONE/setToneControl?mode=manual&bass=$((curr_val - 2))"
+  send_req "$ZONE/setToneControl?mode=manual&bass=$(($_tb_curr_val - 1))"
 }
 
 ttup() {
-  curr_val=_gett
+  _gett
   echo "[MAIN][INFO] Treble UP"
-  send_req "$ZONE/setToneControl?mode=manual&treble=$((curr_val + 2))"
+  send_req "$ZONE/setToneControl?mode=manual&treble=$(($_tt_curr_val + 1))"
 }
 
 ttdown() {
-  curr_val=_gett
+  _gett
   echo "[MAIN][INFO] Treble DOWN"
-  send_req "$ZONE/setToneControl?mode=manual&treble=$((curr_val - 2))"
+  send_req "$ZONE/setToneControl?mode=manual&treble=$(($_tt_curr_val - 1))"
 }
 
 tinfo() {
+  _getb
+  _gett
+  
   echo "[MAIN][INFO] Current Tone Control values:
-  Bass: $(_getb)
-  Treble: $(_gett)
+  Bass: $_tb_curr_val
+  Treble: $_tt_curr_val
   "
 }
 
