@@ -3,7 +3,12 @@ Terminal App for Yamaha MusicCast devices
 
 In the environment of time absence and global laziness Yamaha network receiver terminal client has been implemented in bash.
 
-Check available functions:
+Install latest version from `master`:
+```bash
+curl https://raw.githubusercontent.com/vi7/yamaterm/master/yamctl -o /usr/local/bin/yamctl && chmod a+x /usr/local/bin/yamctl
+```
+
+Check available functions, names must be more or less self-explanatory ;):
 ```bash
 yamctl help
 ```
