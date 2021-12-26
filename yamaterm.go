@@ -1,23 +1,45 @@
 package main
 
-import "github.com/awesome-gocui/gocui"
+import (
+	"log"
+
+	"github.com/awesome-gocui/gocui"
+)
 
 var (
 	g *gocui.Gui
 )
 
 func main() {
-
 	// TODO: implement basic tui for volume, power and song info
 
-	// var volume byte = 21
-	// log.Printf("Setting the volume to %d\n", volume)
-	// yamapi.SetVolume(volume)
+	g, err := gocui.NewGui(gocui.OutputNormal, true)
+	if err != nil {
+		log.Panicln(err)
+	}
+	defer g.Close()
 
-	// log.Println("Toggling power")
-	// setPower("toggle")
+	g.Highlight = true
+	g.SelFrameColor = gocui.ColorRed
 
-	initGui()
-	runGui()
+	help := NewHelpWidget("help", 1, 1, helpText)
+	status := NewStatusbarWidget("status", 1, 7, 50)
+	butdown := NewButtonWidget("butdown", 52, 7, "DOWN", statusDown(status))
+	butup := NewButtonWidget("butup", 58, 7, "UP", statusUp(status))
+	g.SetManager(help, status, butdown, butup)
 
+	err = g.SetKeybinding("", gocui.KeyCtrlC, gocui.ModNone, quit)
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	err = g.SetKeybinding("", gocui.KeyTab, gocui.ModNone, toggleButton)
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	err = g.MainLoop()
+	if err != nil && !gocui.IsQuit(err) {
+		log.Panicln(err)
+	}
 }
